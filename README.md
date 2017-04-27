@@ -14,9 +14,8 @@ $ cd nora-ionic
 Install the dependencies
 
 ```bash
-#NVM (please install and use node v6.9.5)
+#NVM (please install and set default node v6.x)
 wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.0/install.sh | bash
-nvm use v6.9.5
 npm install -g ionic cordova 
 npm install
 ```
