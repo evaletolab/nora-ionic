@@ -1,0 +1,50 @@
+page-player {
+  ion-header{
+    .toolbar-background{
+      background: rgba(10, 10, 10, 0.8);
+    }
+    .toolbar-title, .back-button.show-back-button{
+      color: white;
+    }      
+    
+  }
+
+  div.wrapper{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;    
+
+    h4{
+      padding: 50px 20px;
+      color: white;
+      text-shadow: 0 0 10px black;
+      font-size: 2em;
+      font-weight: 900;      
+    }
+  }
+
+  .scroll-content{
+
+    div.footer{
+      position: absolute;
+      width: 100%;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: rgba(0, 0, 0, 0.51);
+
+
+      .thumbnail{
+        border-radius:5px;
+        width: 50px;
+        height: 50px;
+        margin: 5px;
+      }
+    }
+
+  }
+
+}

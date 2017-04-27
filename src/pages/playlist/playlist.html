@@ -1,0 +1,14 @@
+<ion-header class="nora">
+  <ion-navbar>
+    <ion-title>Lignes du désir</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content fullscreen no-padding>
+  <ion-categories [categories]="categories" [categoriesPerRow]="1"></ion-categories>
+  <button class="nora-mode" ion-button color="danger" large round icon-only>
+      <ion-icon name="pin"></ion-icon>
+  </button>
+  <div [hidden]="firstUse" class="tooltip-add-question">Activer le mode balade</div>
+
+</ion-content>
