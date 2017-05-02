@@ -43,7 +43,7 @@ import { Component, Input } from '@angular/core';
       width: 100%;
     }
     .overlay {
-      background-color: rgba(0, 0, 0, .4);
+      background-color: rgba(0, 0, 0, .35);
     }
     .content-wrapper {
       text-align: center;

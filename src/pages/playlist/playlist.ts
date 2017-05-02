@@ -15,36 +15,44 @@ export class PlaylistPage {
     public navCtrl: NavController
   ) {
     this.categories = [{
-      title: 'Dinner',
-      description: '39 items',
-      background: 'url(./assets/images/1.jpg) center center / cover no-repeat',
+      title: 'Ile Saint Louis',
+      description: '39 éléments',
+      background: 'url(./assets/images/1.ile-saint-louis.jpg) center center / cover no-repeat',
       onClick: this.selectList.bind(this)
     }, {
-      title: 'Lunch',
-      description: '53 items',
-      background: 'url(./assets/images/2.jpg) center center / cover no-repeat',
+      title: 'Orleans',
+      description: '53 éléments',
+      background: 'url(./assets/images/2.orleans.jpg) center center / cover no-repeat',
       onClick: this.selectList.bind(this)
     }, {
-      title: 'Desserts',
-      description: '42 items',
-      background: 'url(./assets/images/3.jpg) center center / cover no-repeat',
+      title: 'Anjou',
+      description: '42 éléments',
+      background: 'url(./assets/images/3.anjou.jpg) center center / cover no-repeat',
       onClick: this.selectList.bind(this)
     }, {
-      title: 'Brunch',
-      description: '44 items',
-      background: 'url(./assets/images/4.jpg) center center / cover no-repeat',
+      title: 'Bourbon',
+      description: '44 éléments',
+      background: 'url(./assets/images/4.bourbon.jpg) center center / cover no-repeat',
       onClick: this.selectList.bind(this)
     }, {
-      title: 'Beverages',
-      description: '27 items',
-      background: 'url(./assets/images/5.jpg) center center / cover no-repeat',
+      title: 'Béthune',
+      description: '27 éléments',
+      background: 'url(./assets/images/5.bethune.jpg) center center / cover no-repeat',
       onClick: this.selectList.bind(this)
     }, {
-      title: 'Catering',
-      description: '29 items',
-      background: 'url(./assets/images/6.jpg) center center / cover no-repeat',
+      title: 'Anjou',
+      description: '29 éléments',
+      background: 'url(./assets/images/3.anjou.jpg) center center / cover no-repeat',
       onClick: this.selectList.bind(this)
     }]
+  }
+
+  selectAuto(){
+    this.navCtrl.push(Player, {
+      background:'url(./assets/images/map.png) center center / cover no-repeat',
+      auto:true
+    });
+    
   }
 
   selectList(list){

@@ -15,20 +15,28 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 export class Player {
 
   background:string;
+  thumbnail:string;
   title:string;
   auto:boolean;
+  defaultBackground='url(./assets/images/1.ile-saint-louis.jpg) center center / cover no-repeat';
+  play:boolean=false;
 
   constructor(
     public navCtrl: NavController, 
     public navParams: NavParams
   ) {
-     this.title = navParams.get('title');
-     this.background = navParams.get('background');
-     this.auto=navParams.get('auto');
+    this.auto=navParams.get('auto');
+    this.background=(this.auto)?this.defaultBackground:navParams.get('background');
+    this.thumbnail=navParams.get('background');
+    this.title = navParams.get('title')||'Au hasard du chemin';
+
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad Player');
   }
 
+  doToggle(){
+    this.play=!this.play;
+  }
 }

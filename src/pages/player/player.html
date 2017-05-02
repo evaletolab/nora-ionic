@@ -4,22 +4,29 @@
   See http://ionicframework.com/docs/components/#navigation for more info on
   Ionic pages and navigation.
 -->
-<ion-header>
+<ion-header class="nora">
 
   <ion-navbar>
-    <ion-title>Player</ion-title>
+    <img src="assets/images/logo.png" />
+    <ion-title></ion-title>
   </ion-navbar>
 
 </ion-header>
 
 
 <ion-content padding [ngStyle]="{'background': background}" >
-  <div ion-fixed class="wrapper">
+  <div class="wrapper">
     <h4>{{title}}</h4>
   </div>
 
   <div class="footer" no-padding>
-    <div [ngStyle]="{'background': background}" class="thumbnail"></div>
-
+    <div [ngStyle]="{'background': thumbnail}" class="thumbnail" [class.auto]="auto">
+      <div class="dot" [class.running]="play"></div>
+    </div>
+    <button class="nora-play" ion-button color="danger"  round icon-only 
+           (click)="doToggle();">
+        <ion-icon [name]="play ? 'pause' :'md-arrow-dropright'"></ion-icon>
+    </button>
+    
   </div>
 </ion-content>

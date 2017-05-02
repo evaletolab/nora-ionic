@@ -1,10 +1,14 @@
 page-player {
   ion-header{
+    img{
+      margin-left: 70px;
+      width:50%!important;
+    }
     .toolbar-background{
-      background: rgba(10, 10, 10, 0.8);
+      background: rgba(255, 255, 255, 0.9);
     }
     .toolbar-title, .back-button.show-back-button{
-      color: white;
+      color: black;
     }      
     
   }
@@ -18,14 +22,15 @@ page-player {
 
     h4{
       padding: 50px 20px;
-      color: white;
-      text-shadow: 0 0 10px black;
+      color: black;
+      text-shadow: 0 0 25px rgba(255, 255, 255, 0.9);
       font-size: 2em;
       font-weight: 900;      
     }
   }
 
   .scroll-content{
+    padding-top: 0px !important;
 
     div.footer{
       position: absolute;
@@ -42,7 +47,34 @@ page-player {
         width: 50px;
         height: 50px;
         margin: 5px;
+
+        &.auto{
+          .dot{
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            margin: 22px;
+            border-radius:50%;
+            background: #cca92c;
+            cursor: pointer;
+            box-shadow: 0 0 0 rgba(204,169,44, 0.4);          
+              
+            &.running{
+              animation: pulse 1.5s infinite;    
+            }
+          }
+        }
       }
+
+      button.nora-play{
+        position: absolute;
+        bottom: 8px;
+        right: 5px;
+        box-shadow: 0 0 2px rgb(0, 0, 0);
+        border-radius:50%;
+        width: 40px;
+        height: 40px;        
+      }      
     }
 
   }

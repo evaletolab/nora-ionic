@@ -1,8 +1,11 @@
 playlist-page {
   ion-header{
     text-align: center;
+    img{
+      width:40%!important;
+    }
     .toolbar-background{
-      background: rgba(10, 10, 10, 0.9);
+      background: rgba(255, 255, 255, 0.8);
     }
     .toolbar-title{
       color: white;

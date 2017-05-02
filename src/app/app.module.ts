@@ -21,7 +21,18 @@ import { Player } from '../pages/player/player';
   ],
   imports: [
     BrowserModule,
-    IonicModule.forRoot(MyApp)
+    IonicModule.forRoot(MyApp,{
+      backButtonText:'',
+      _backButtonIcon: 'concerto-dropleft',
+      platforms : {
+        //Fix issue on IOS with keyboard and scrolling content
+        ios : {
+          scrollAssist: false,
+          autoFocusAssist: false
+        }
+      }
+    })
+    
   ],
   bootstrap: [IonicApp],
   entryComponents: [
