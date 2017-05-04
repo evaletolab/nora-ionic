@@ -19,8 +19,11 @@
     <h4>{{title}}</h4>
   </div>
 
-  <div class="footer" no-padding>
-    <div [ngStyle]="{'background': thumbnail}" class="thumbnail" [class.auto]="auto">
+  <div class="footer" no-padding [class.controls]="controls">
+    <div class="thumbnail"
+         [ngStyle]="{'background': thumbnail}"  
+         [class.auto]="auto"
+         (click)="doControls()">
       <div class="dot" [class.running]="play"></div>
     </div>
     <button class="nora-play" ion-button color="danger"  round icon-only 
@@ -28,5 +31,9 @@
         <ion-icon [name]="play ? 'pause' :'md-arrow-dropright'"></ion-icon>
     </button>
     
+    <!-- MAP -->
+    <div #map id="map" class="map" *ngIf="auto"></div>  
+    
+
   </div>
 </ion-content>
