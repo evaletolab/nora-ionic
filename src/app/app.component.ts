@@ -9,7 +9,7 @@ import { PlaylistPage } from '../pages/playlist/playlist';
 @Component({
   templateUrl: 'app.html'
 })
-export class MyApp {
+export class NoraApp {
   rootPage:any = PlaylistPage;
 
   constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen) {

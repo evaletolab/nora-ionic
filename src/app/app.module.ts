@@ -11,13 +11,13 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { AudioMixer } from '../providers/audio-mixer';
 import { HomePage } from '../pages/home/home';
 import { IonCategories } from '../components/ion-categories';
-import { MyApp } from './app.component';
+import { NoraApp } from './app.component';
 import { PlaylistPage } from '../pages/playlist/playlist';
 import { Player } from '../pages/player/player';
 
 @NgModule({
   declarations: [
-    MyApp,
+    NoraApp,
     HomePage,
     Player,
     PlaylistPage,
@@ -26,7 +26,7 @@ import { Player } from '../pages/player/player';
   imports: [
     BrowserModule,
     HttpModule,
-    IonicModule.forRoot(MyApp,{
+    IonicModule.forRoot(NoraApp,{
       backButtonText:'',
       _backButtonIcon: 'concerto-dropleft',
       platforms : {
@@ -41,7 +41,7 @@ import { Player } from '../pages/player/player';
   ],
   bootstrap: [IonicApp],
   entryComponents: [
-    MyApp,
+    NoraApp,
     HomePage,
     Player,
     PlaylistPage
