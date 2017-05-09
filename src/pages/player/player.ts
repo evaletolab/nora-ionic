@@ -1,7 +1,7 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
-import { Geolocation } from '@ionic-native/geolocation';
+import { Events, IonicPage, NavController, NavParams } from 'ionic-angular';
 
+import { LocationTracker } from '../../providers/background-geo';
 import { AudioMixer } from '../../providers/audio-mixer';
 
 declare var google;
@@ -33,7 +33,7 @@ export class Player {
 
   //
   // history of position
-  locationMarkers=[];
+  markers=[];
 
   @ViewChild('map') mapElement: ElementRef;
   map: any;
@@ -42,7 +42,8 @@ export class Player {
 
   constructor(
     public mixer: AudioMixer,
-    public geolocation: Geolocation,
+    public events: Events,
+    public locationTracker: LocationTracker,
     public navCtrl: NavController, 
     public navParams: NavParams
   ) {
@@ -51,17 +52,18 @@ export class Player {
     this.thumbnail=navParams.get('background');
     this.title = navParams.get('title')||'Au hasard du chemin';
 
+
   }
 
 
   doToggle(){
     this.play=!this.play;
-    if(this.play&&this.auto)this.runGeoloc();
+    if(this.play&&this.auto)this.locationTracker.start();
     if(this.play){
       this.mixer.play(this.URL_BOOK,'book');
       this.mixer.play(this.URL_ZONE,'atmosphere');
     }else {
-      this.mixer.pause()
+      this.mixer.pause();
     };
   }
 
@@ -71,66 +73,58 @@ export class Player {
 
   //
   // MAP
-  loadMap(){ 
+  initGeoTracker(){ 
     if(!this.auto){
       // no map in this case
       return;
     }
  
-    this.geolocation.getCurrentPosition().then((position) => {
-      console.log('---------------- GEO',position.coords.latitude, position.coords.longitude)
-      let latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
- 
-      let mapOptions = {
-        center: latLng,
-        zoom: 15,
-        mapTypeId: google.maps.MapTypeId.ROADMAP,
-        draggable:false
-      }
- 
-      this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
- 
-    }, (err) => {
-      console.log(err);
+    // init map
+    // Île Saint-Louis, Paris, France
+    // 48.8516073,2.3544833
+    //         mapTypeId: google.maps.MapTypeId.TERRAIN,
+    let latLng = new google.maps.LatLng(48.8516073,2.3544833);
+
+    let mapOptions = {
+      center: latLng,
+      zoom: 15,
+      mapTypeId: google.maps.MapTypeId.ROADMAP,
+      draggable:false,
+      disableDoubleClickZoom:true
+    }
+
+    this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
+
+    this.events.subscribe('location',(location)=>{
+      //
+      // add marker on map
+      this.markers.push(new google.maps.Marker({
+          icon: {
+              path: google.maps.SymbolPath.CIRCLE,
+              scale: 7,
+              fillColor: 'green',
+              fillOpacity: .7,
+              strokeColor: 'white',
+              strokeWeight: 3
+          },
+          map: this.map,
+          position: new google.maps.LatLng(location.lat, location.lng)
+      }));
     });
- 
+
+    //
+    // run tracker
+    this.locationTracker.start();
 
   }
 
-  runGeoloc(){
-    setTimeout(()=>{
-      this.geolocation.getCurrentPosition().then((position) => {
-        //
-        // add marker on map
-        this.locationMarkers.push(new google.maps.Marker({
-            icon: {
-                path: google.maps.SymbolPath.CIRCLE,
-                scale: 7,
-                fillColor: 'green',
-                fillOpacity: .7,
-                strokeColor: 'white',
-                strokeWeight: 3
-            },
-            map: this.map,
-            position: new google.maps.LatLng(position.coords.latitude, position.coords.longitude)
-        }));
-
-        //
-        // sure to get next position after this one!
-        if(this.play){
-          this.runGeoloc();
-        }
-      });
-    },5000);
-    
-    // let marker = new google.maps.Marker({
-    //   map: this.map,
-    //   animation: google.maps.Animation.DROP,
-    //   position: this.map.getCenter()
-    // });
-    //let content = "<h4>Information!</h4>";          
-    //this.addInfoWindow(marker, content);
-  }
+  // let marker = new google.maps.Marker({
+  //   map: this.map,
+  //   animation: google.maps.Animation.DROP,
+  //   position: this.map.getCenter()
+  // });
+  //let content = "<h4>Information!</h4>";          
+  //this.addInfoWindow(marker, content);
 
   //
   // useless for now
@@ -148,14 +142,16 @@ export class Player {
   //
   // EVENTS
   ionViewDidLoad() {
-    console.log('ionViewDidLoad Player');
-    this.loadMap();
+    this.initGeoTracker();
   }
 
+  //
+  // clean resources on exit;
   ionViewWillUnload(){
+    this.locationTracker.stop();
+    this.mixer.pause()
     this.play=false;
     this.auto=false;
-    console.log('ionViewWillUnload Player');    
   }
   
 }

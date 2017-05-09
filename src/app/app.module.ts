@@ -9,6 +9,8 @@ import { StatusBar } from '@ionic-native/status-bar';
 //
 // custom elements
 import { AudioMixer } from '../providers/audio-mixer';
+import { LocationTracker } from '../providers/background-geo';
+import { BackgroundGeolocation } from '@ionic-native/background-geolocation';
 import { HomePage } from '../pages/home/home';
 import { IonCategories } from '../components/ion-categories';
 import { NoraApp } from './app.component';
@@ -28,7 +30,7 @@ import { Player } from '../pages/player/player';
     HttpModule,
     IonicModule.forRoot(NoraApp,{
       backButtonText:'',
-      _backButtonIcon: 'concerto-dropleft',
+      _backButtonIcon: 'dropleft',
       platforms : {
         //Fix issue on IOS with keyboard and scrolling content
         ios : {
@@ -48,6 +50,8 @@ import { Player } from '../pages/player/player';
   ],
   providers: [
     AudioMixer,
+    BackgroundGeolocation,
+    LocationTracker,
     StatusBar,
     SplashScreen,
     Geolocation,
