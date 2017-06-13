@@ -24,9 +24,14 @@
          [ngStyle]="{'background': thumbnail}"  
          [class.auto]="auto"
          (click)="doControls()">
-      <div class="dot" [class.running]="play"></div>
+      <div class="dot" [class.running]="auto"></div>
     </div>
-    <button class="nora-play" ion-button color="danger"  round icon-only 
+
+    <div class="info">{{sequencer.progression}} <span [hidden]="!progress">- {{progress*1000|date:'mm:ss'}} - {{completed|percent}}</span></div>
+
+    <button class="nora-play" 
+            ion-button color="danger"  round icon-only 
+            [disabled]="!assetBook.audio_file"
            (click)="doToggle();">
         <ion-icon [name]="play ? 'pause' :'md-arrow-dropright'"></ion-icon>
     </button>

@@ -40,9 +40,17 @@ Adding Platforms
 ionic platform add ios
 ```
 
+
 Emulate Ionic app on `iPad-Pro`
 ```bash
 ionic emulate ios --target="Ipad-Pro"
+```
+
+Emulate Ionic app on Android
+```bash
+ionic run android
+# pour voir le log spécifique à javascript et Ionic
+adb logcat CordovaLog:D *:S
 ```
 
 Run Ionic app on `iPad-Pro` device

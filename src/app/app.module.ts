@@ -17,6 +17,9 @@ import { NoraApp } from './app.component';
 import { PlaylistPage } from '../pages/playlist/playlist';
 import { Player } from '../pages/player/player';
 
+import { NoraService } from 'nora-ng';
+
+
 @NgModule({
   declarations: [
     NoraApp,
@@ -52,6 +55,7 @@ import { Player } from '../pages/player/player';
     AudioMixer,
     BackgroundGeolocation,
     LocationTracker,
+    NoraService,
     StatusBar,
     SplashScreen,
     Geolocation,

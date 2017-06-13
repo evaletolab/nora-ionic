@@ -1,7 +1,19 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { AlertController, LoadingController, NavController, NavParams } from 'ionic-angular';
 import { IonCategory } from '../../components/ion-categories';
+import { 
+  Asset,
+  NoraService, 
+  PlaylistInfo, 
+  I_AssetSequencer, 
+  StaticAssetSequencer, 
+  DynamicAssetSequencer,
+  id 
+} from 'nora-ng';
 import { Player } from '../../pages/player/player';
+
+
+
 
 @Component({
   selector: 'playlist-page',
@@ -9,42 +21,55 @@ import { Player } from '../../pages/player/player';
 })
 
 export class PlaylistPage {
-  private categories: Array<IonCategory>;
+  private categories: Array<IonCategory>=[];
+
+  //
+  // UI loader
+  loader;
 
   constructor(
-    public navCtrl: NavController
+    public alertCtrl: AlertController,
+    public loading : LoadingController,
+    public navCtrl: NavController,
+    public nora_service:NoraService
   ) {
-    this.categories = [{
-      title: 'Ile Saint Louis',
-      description: '39 éléments',
-      background: 'url(./assets/images/1.ile-saint-louis.jpg) center center / cover no-repeat',
-      onClick: this.selectList.bind(this)
-    }, {
-      title: 'Orleans',
-      description: '53 éléments',
-      background: 'url(./assets/images/2.orleans.jpg) center center / cover no-repeat',
-      onClick: this.selectList.bind(this)
-    }, {
-      title: 'Anjou',
-      description: '42 éléments',
-      background: 'url(./assets/images/3.anjou.jpg) center center / cover no-repeat',
-      onClick: this.selectList.bind(this)
-    }, {
-      title: 'Bourbon',
-      description: '44 éléments',
-      background: 'url(./assets/images/4.bourbon.jpg) center center / cover no-repeat',
-      onClick: this.selectList.bind(this)
-    }, {
-      title: 'Béthune',
-      description: '27 éléments',
-      background: 'url(./assets/images/5.bethune.jpg) center center / cover no-repeat',
-      onClick: this.selectList.bind(this)
-    }, {
-      title: 'Anjou',
-      description: '29 éléments',
-      background: 'url(./assets/images/3.anjou.jpg) center center / cover no-repeat',
-      onClick: this.selectList.bind(this)
-    }]
+  }
+
+  ngOnInit(){
+    this.loader = this.loading.create({
+      content: "Chargement"
+    });   
+
+    this.loader.present();
+    
+    this.nora_service.init().then(()=>{
+      let playlist_infos:ReadonlyArray<PlaylistInfo> = this.nora_service.available_playlists();
+      playlist_infos.forEach(playlist=>{        
+        this.categories.push({
+          key:playlist.playlist_id,
+          title:playlist.title+'! ',
+          description:playlist.asset_count + ' éléments',
+          background:'url('+playlist.image.url+') center center / cover no-repeat',
+          onClick:this.selectList.bind(this)
+        });
+      });
+      //
+      // dismiss loader
+      this.loader.dismiss();
+
+    }).catch(error=>{
+      error => this.displayError("Erreur",error)
+    });
+    
+  }
+
+  displayError(title, err){
+    this.loader.dismiss();
+    this.alertCtrl.create({
+      title: title,
+      subTitle: err.message,
+      buttons: ['OK']
+    }).present();
   }
 
   selectAuto(){
@@ -55,11 +80,11 @@ export class PlaylistPage {
     
   }
 
-  selectList(list){
+  selectList(listElement){
     this.navCtrl.push(Player, {
-      list: list,
-      background:list.background,
-      title:list.title,
+      key: listElement.key,
+      background:listElement.background,
+      title:listElement.title,
       auto:false
     });
   }

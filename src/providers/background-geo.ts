@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { Events } from 'ionic-angular';
 import { BackgroundGeolocation } from '@ionic-native/background-geolocation';
 import { Geolocation, Geoposition } from '@ionic-native/geolocation';
@@ -16,9 +16,12 @@ export class LocationTracker {
     stationaryRadius: 10,
     distanceFilter: 15,
     desiredAccuracy: 10,
-    interval: 6000,
+    interval: 5000,
+    // fastestInterval:2000,
+    // stopOnTerminate:false,
+    locationProvider:0
     // debug: true,
-    // locationProvider: 0,//backgroundGeolocation.provider.ANDROID_DISTANCE_FILTER_PROVIDER,
+    // locationProvider: this.backgroundGeolocation.provider.ANDROID_DISTANCE_FILTER_PROVIDER,
     // fastestInterval: 5,
     // activitiesInterval: 10,
     // stopOnTerminate: false,
@@ -45,18 +48,20 @@ export class LocationTracker {
     public backgroundGeolocation:BackgroundGeolocation,
     public events: Events,
     public geolocation:Geolocation,
-    public http: Http
+    public http: Http,
+    public zone: NgZone
   ) {
   }
 
   start(){
 
     this.backgroundGeolocation.configure(this.config).subscribe((location) => {
-      this.events.publish('location',location);
+    // Run update inside of Angular's zone
+      this.zone.run(() => this.events.publish('location',location));
     }, (err) => {
       //
       // inform errors
-      this.events.publish('location',{error:err});
+      this.zone.run(() => this.events.publish('location',{error:err}))  ;
     });
 
     // Turn ON the background-geolocation system.
@@ -78,6 +83,7 @@ export class LocationTracker {
   }
 
   stop(){
+    console.log('-------------------- GEO.STOP')
     this.backgroundGeolocation.finish();
     //this.watch.unsubscribe();
   }
