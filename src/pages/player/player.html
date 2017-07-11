@@ -31,7 +31,7 @@
 
     <button class="nora-play" 
             ion-button color="danger"  round icon-only 
-            [disabled]="!assetBook.audio_file"
+            [disabled]="!assetBook?.audio_file"
            (click)="doToggle();">
         <ion-icon [name]="play ? 'pause' :'md-arrow-dropright'"></ion-icon>
     </button>

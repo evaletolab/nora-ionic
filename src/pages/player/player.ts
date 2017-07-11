@@ -2,9 +2,9 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { AlertController, Events, IonicPage, NavController, NavParams } from 'ionic-angular';
 
 import { LocationTracker } from '../../providers/background-geo';
-import { AudioMixer } from '../../providers/audio-mixer';
+import { AudioMixer, MixerTrack } from '../../providers/audio-mixer';
 
-import { Asset, I_AssetSequencer, NoraService } from 'nora-ng';
+import { AudioAttachment, Asset, I_AssetSequencer, NoraService } from 'nora-ng';
 declare var google;
 
 /**
@@ -33,13 +33,14 @@ export class Player {
   controls:boolean=false;
   progress:number;
   completed:number;
+  currentLocation:any;
 
   // 
   // Nora core
   key:string;
   sequencer:I_AssetSequencer;
   assetBook:Asset;
-  assetAtmosphere:Asset;
+  assetAtmosphere:AudioAttachment;
   //
   // history of position
   markers=[];
@@ -70,18 +71,21 @@ export class Player {
     // build static or gps sequencer
     if(navParams.get('key')){
       this.sequencer = this.nora_service.static_asset_sequencer_with_playlist_id(navParams.get('key'));
+
+      //
+      // initial asset for this player
+      this.assetBook=this.sequencer.next_asset();
+      this.assetAtmosphere=this.sequencer.next_ambient_audio();
+      this.thumbnail='url('+this.assetBook.images[0].thumbnails.large.url+') center center / cover no-repeat';
     }else{
       this.sequencer = this.nora_service.dynamic_asset_sequencer();
     }
 
-
+  
     this.mixer.bindEvents(this.onMixerEnd.bind(this),this.onMixerUpdate.bind(this));
 
     
-    //
-    // initial asset for this player
-    this.assetBook=this.sequencer.next();
-    this.thumbnail='url('+this.assetBook.images[0].thumbnails.large.url+') center center / cover no-repeat';
+    
 
     // this.assetAtmosphere=this.sequencer.next();
 
@@ -111,7 +115,7 @@ export class Player {
     if(this.play){
       if(this.assetBook.audio_file.length)
         this.mixer.play(this.assetBook.audio_file[0].url,'book');
-      // this.mixer.play(this.assetAtmosphere.audio_file.url,'atmosphere');
+        this.mixer.play(this.assetAtmosphere.url,'atmosphere');
     }else {
       this.mixer.pause();
     };
@@ -152,9 +156,18 @@ export class Player {
     this.events.subscribe('location',(location)=>{
       console.log('------------GEO '+JSON.stringify(location));
 
+      //
+      // on error
       if(location.error){
         return this.displayError("Problème GPS 8-(",location.error);
       }
+
+      //
+      // save current position
+      this.currentLocation=location;
+      this.assetBook=this.sequencer.next_asset(this.currentLocation);
+      this.assetAtmosphere=this.sequencer.next_ambient_audio(this.currentLocation);      
+      
       //
       // add marker on map
       this.markers.push(new google.maps.Marker({
@@ -174,6 +187,8 @@ export class Player {
       // fit the map to the newly inclusive bounds
       let latLng = this.markers[this.markers.length-1].getPosition(); // returns LatLng object
       map.setCenter(latLng); // setCenter takes a LatLng object      
+      
+
 
     });
 
@@ -210,10 +225,23 @@ export class Player {
   onMixerEnd(track:string){
 
     this.progress=0;
-    this.assetBook=this.sequencer.next();
+    // FIXME use Enum or better solution
+    switch(track){
+      case 'book':
+      this.assetBook=this.sequencer.next_asset(this.currentLocation);
+      break;
+      case 'atmosphere':
+      this.assetAtmosphere=this.sequencer.next_ambient_audio(this.currentLocation);      
+      break;
+    }
+
     if(this.assetBook&&this.assetBook.audio_file){
       this.mixer.play(this.assetBook.audio_file[0].url,'book');
       this.thumbnail='url('+this.assetBook.images[0].thumbnails.large.url+') center center / cover no-repeat'
+    }
+
+    if(this.assetAtmosphere&&this.assetAtmosphere.url){
+      this.mixer.play(this.assetAtmosphere.url,'atmosphere');
     }
 
     // console.log('----------------- end',track);

@@ -1,6 +1,6 @@
 import { Injectable, NgZone } from '@angular/core';
 import { Events } from 'ionic-angular';
-import { BackgroundGeolocation } from '@ionic-native/background-geolocation';
+import { BackgroundGeolocation, BackgroundGeolocationResponse } from '@ionic-native/background-geolocation';
 import { Geolocation, Geoposition } from '@ionic-native/geolocation';
 import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
@@ -54,9 +54,15 @@ export class LocationTracker {
   }
 
   start(){
+    //
+    // first sample in foreground
+    this.geolocation.getCurrentPosition(this.options).then((position:Geoposition)=>{      
+      this.zone.run(() => this.events.publish('location',position.coords));      
+    })
 
-    this.backgroundGeolocation.configure(this.config).subscribe((location) => {
+    this.backgroundGeolocation.configure(this.config).subscribe((location:BackgroundGeolocationResponse) => {
     // Run update inside of Angular's zone
+    
       this.zone.run(() => this.events.publish('location',location));
     }, (err) => {
       //

@@ -138,7 +138,7 @@ export class AudioMixer {
   //context:AudioContext = new AudioContext();
   //
   // mixer tracks
-  tracks={
+  public tracks={
     'book':0,
     'atmosphere':1,
     'surprise':2
