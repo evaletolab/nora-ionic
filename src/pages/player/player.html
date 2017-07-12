@@ -35,6 +35,14 @@
            (click)="doToggle();">
         <ion-icon [name]="play ? 'pause' :'md-arrow-dropright'"></ion-icon>
     </button>
+    <div class="volume" >
+      <ion-item>
+        <ion-range [(ngModel)]="volume" min="0" max="100" dualKnobs="true" (ionChange)="changeVolume($event)">
+          <ion-icon range-left small name="volume-down"></ion-icon>
+          <ion-icon range-right small name="volume-up"></ion-icon>
+        </ion-range>
+      </ion-item>      
+    </div>
     
     <!-- MAP -->
     <div #map id="map" class="map" *ngIf="auto"></div>  

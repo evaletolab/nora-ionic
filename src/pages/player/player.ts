@@ -34,6 +34,10 @@ export class Player {
   progress:number;
   completed:number;
   currentLocation:any;
+  volume:any={
+    lower:40,
+    upper:100
+  };
 
   // 
   // Nora core
@@ -100,6 +104,11 @@ export class Player {
     }).present();
   }
 
+  changeVolume(range){
+    this.mixer.volume((range.value.lower/100),"atmosphere");
+    this.mixer.volume((range.value.upper/100),"book");
+  }
+
   doToggle(){
     //
     // toggle play
@@ -154,7 +163,6 @@ export class Player {
     let map= this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
 
     this.events.subscribe('location',(location)=>{
-      console.log('------------GEO '+JSON.stringify(location));
 
       //
       // on error

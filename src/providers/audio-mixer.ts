@@ -11,6 +11,8 @@ window['AudioContext'] = window['AudioContext'] || window['webkitAudioContext'];
 
 export class MixerTrack{
   private audio: HTMLAudioElement;
+  private audioCtx:AudioContext;
+  private gainNode:GainNode;
 
   // current time
   private _progress:number;
@@ -38,8 +40,23 @@ export class MixerTrack{
 
     // HTML audio is ready for streaming (vs AudioContext)
     this.audio = new Audio();
+    this.audioCtx = new (window['AudioContext'])();
     this.volume=volume;
     this.name=name;
+
+    // Feed the HTMLMediaElement into it
+    var source = this.audioCtx.createMediaElementSource(this.audio);
+
+    // Create a gain node
+    this.gainNode = this.audioCtx.createGain();
+    this.gainNode.gain.value=volume;
+
+    // connect the AudioBufferSourceNode to the gainNode
+    // and the gainNode to the destination, so we can play the
+    // music and adjust the volume using the mouse cursor
+    source.connect(this.gainNode);
+    this.gainNode.connect(this.audioCtx.destination);
+
 
     this.onUpdate=update;
     this.onEnd=end;
@@ -109,6 +126,7 @@ export class MixerTrack{
       this.setSrc(url);
     }
     this.audio.volume=this.volume;
+    this.gainNode.gain.value=this.volume;
     this.audio.play();
     this.bindEvents();
   }
@@ -154,7 +172,7 @@ export class AudioMixer {
       this.onEnd.bind(this)
     ));
     this.mixer.push(new MixerTrack(
-      'atmosphere',0.4,
+      'atmosphere',0.5,
       this.onUpdate.bind(this),
       this.onEnd.bind(this)
     ));
@@ -187,6 +205,12 @@ export class AudioMixer {
   // load new audio stream
   load(url:string,track:string){
     this.mixer[this.tracks[track]].setSrc(url);
+  }
+
+  //
+  // volume for track
+  volume(value:number,track:string){
+    this.mixer[this.tracks[track]].setVolume(value);
   }
 
   pause(){
