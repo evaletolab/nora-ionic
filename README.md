@@ -40,14 +40,35 @@ Adding Platforms
 ionic platform add ios
 ```
 
+
 Emulate Ionic app on `iPad-Pro`
 ```bash
 ionic emulate ios --target="Ipad-Pro"
 ```
 
+Emulate Ionic app on Android
+```bash
+ionic run android
+# pour voir le log spécifique à javascript et Ionic
+adb logcat CordovaLog:D *:S
+```
+
 Run Ionic app on `iPad-Pro` device
 ```bash
 ionic build 
-open platforms/ios/Concerto.xcodeproj
+open platforms/ios/NoraIonic.xcodeproj
 # Configure xcode to get this settings
 ```
+
+Adding Android permission in AndroidManifest.xml
+```XML
+<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+<uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
+```
+
+In config.xml
+```XML
+<preference name="AndroidPersistentFileLocation" value="Compatibility" />
+```
+

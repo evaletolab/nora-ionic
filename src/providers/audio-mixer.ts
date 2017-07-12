@@ -18,11 +18,16 @@ export class MixerTrack{
   // % completed
   private _completed:number;
 
+
+  private onUpdate:Function;
+  private onEnd:Function;
+
   src:string;
   name:string;
   duration:number;
   isPlaying:boolean;
   volume:number;
+
   constructor(
     name:string, 
     volume:number,
@@ -36,16 +41,14 @@ export class MixerTrack{
     this.volume=volume;
     this.name=name;
 
+    this.onUpdate=update;
+    this.onEnd=end;
+  }
 
-
-    //
-    // map events
+  private bindEvents(){
     this.audio.addEventListener("timeupdate", (e) => { 
-      if (this.isPlaying && this.audio.currentTime > 0) {
-        this._progress = this.audio.currentTime;
-        this._completed = this.audio.duration > 0 ? Math.trunc (this.audio.currentTime / this.audio.duration * 100)/100 : 0;
-      }            
-      if(update)update(this.name,this._progress,this._completed); 
+      this.timeupdate()
+      this.onUpdate(this.name,this._progress,this._completed); 
     }, false);
     
     this.audio.addEventListener("error", (err) => {
@@ -53,27 +56,40 @@ export class MixerTrack{
       this.isPlaying = false;
     }, false);
     
-    this.audio.addEventListener("canplay", () => {
-      console.log(`Loaded track ${this.src}`);
-      this.play();
-      //if(ready)ready(this.TRACK);
-    }, false);
-    
-    // this.audio.addEventListener("playing", () => {
-    //   console.log(`Playing track ${this.src}`);
-    //   //if(play)play(this.TRACK);
+    // this.audio.addEventListener("canplay", () => {
+    //   console.log(`Loaded track ${this.src}`);
+    //   this.play();
+    //   //if(ready)ready(this.TRACK);
     // }, false);
     
-    this.audio.addEventListener("ended", () => {
-      console.log('Finished playback');
-      if(end)end(this.name);
+    this.audio.addEventListener("playing", () => {
+      console.log(`Playing track ${this.audio.src}`);
+      this.isPlaying=true;
     }, false);
     
+    this.audio.addEventListener("ended", () => {
+      this.isPlaying=false;
+      console.log('Finished playback');
+      this.onEnd(this.name);
+    });
+    
     this.audio.addEventListener("durationchange", (e:any) => {    
-      this.duration = e.target.duration;
+      this.durationchange(e.target.duration);
     }, false);  
-
+    
   }
+
+  timeupdate(){
+    if (this.isPlaying && this.audio.currentTime > 0) {
+      this._progress = this.audio.currentTime;
+      this._completed = this.audio.duration > 0 ? Math.trunc (this.audio.currentTime / this.audio.duration * 100)/100 : 0;
+    }                
+  }
+  
+  durationchange(duration:number){
+    this.duration = duration;
+  }  
+
   setSrc(url){
     if(url===this.src){
       return;
@@ -89,13 +105,12 @@ export class MixerTrack{
 
 
   play(url?:string){
-    console.log('---------',url,this.name, this.volume);    
     if(url){
       this.setSrc(url);
     }
     this.audio.volume=this.volume;
     this.audio.play();
-    this.isPlaying=true;
+    this.bindEvents();
   }
 
   pause(){
@@ -115,12 +130,15 @@ export class MixerTrack{
 @Injectable()
 export class AudioMixer {
 
+  cbUpdate:Function;
+  cbEnd:Function;
+
   mixer:Array<MixerTrack>=[];
   isPlaying:boolean;
   //context:AudioContext = new AudioContext();
   //
   // mixer tracks
-  tracks={
+  public tracks={
     'book':0,
     'atmosphere':1,
     'surprise':2
@@ -152,26 +170,31 @@ export class AudioMixer {
   //
   // display current track information
   onUpdate(track:string,progress:number,completed:number){
+    this.cbUpdate(track,progress,completed);
   }
 
   //
   // ask for next track
   onEnd(track:string){
+    this.cbEnd(track);
   }
   
+  bindEvents(onEnd:Function,onUpdate:Function){
+    this.cbEnd=onEnd;
+    this.cbUpdate=onUpdate;
+  }
   //
   // load new audio stream
   load(url:string,track:string){
-    console.log('---------',track,this.tracks[track])
     this.mixer[this.tracks[track]].setSrc(url);
   }
 
   pause(){
-    this.isPlaying=true;
+    this.isPlaying=false;
     this.mixer.forEach(mixer => mixer.pause())
   }
   play(url?:string,track?:string){
-    this.isPlaying=false;
+    this.isPlaying=true;
     if(url&&track){
       this.load(url,track);
     }
