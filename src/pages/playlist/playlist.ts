@@ -47,7 +47,7 @@ export class PlaylistPage {
       playlist_infos.forEach(playlist=>{        
         this.categories.push({
           key:playlist.playlist_id,
-          title:playlist.title+'! ',
+          title:playlist.title,
           description:playlist.asset_count + ' éléments',
           background:'url('+playlist.image.url+') center center / cover no-repeat',
           onClick:this.selectList.bind(this)
