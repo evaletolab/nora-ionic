@@ -37,7 +37,7 @@
     </button>
     <div class="volume" >
       <ion-item>
-        <ion-range [(ngModel)]="volume" min="0" max="100" dualKnobs="true" (ionChange)="changeVolume($event)">
+        <ion-range [(ngModel)]="volume" min="0" max="100" dualKnobs="true" (ionChange)="changeVolume($event)" class="range-md">
           <ion-icon range-left small name="volume-down"></ion-icon>
           <ion-icon range-right small name="volume-up"></ion-icon>
         </ion-range>

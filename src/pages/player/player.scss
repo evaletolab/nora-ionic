@@ -11,6 +11,8 @@ page-player {
       color: black;
     }      
     
+
+
   }
 
   div.wrapper{
@@ -46,6 +48,7 @@ page-player {
         margin-bottom: 0px;        
       }
 
+
       .volume{
         position: absolute;
         bottom: 0;
@@ -53,17 +56,22 @@ page-player {
         right: 0;
         z-index: 10000;        
 
+
         ion-item{
-          background-color: rgba(75, 75, 75, 0.55);
+          background-color: rgba(75, 75, 75, 0.75);
           height: 40px;
           .item-inner{
             border: 0;
           }
+
           ion-range{
-            background-color: rgba(75, 75, 75, 0.35);
+            background-color: rgba(75, 75, 75, 0.55);
+            .range-knob, .range-bar-active{
+              background: #00ff9a!important;
+            }
           }
           ion-icon{
-            color:white;
+            color:#00ff9a!important;;
           }
         }
         
